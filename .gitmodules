@@ -1,0 +1,4 @@
+[submodule "3rdparty/kinpy"]
+	path = 3rdparty/kinpy
+	url = git@github.com:claudius-kienle/kinpy.git
+	branch = batch_computation

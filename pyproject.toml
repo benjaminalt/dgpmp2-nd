@@ -1,0 +1,29 @@
+[build-system]
+requires = [
+    "setuptools",
+    'torch==2.2.2']
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dgpmp2"
+description = "ArtiMinds dGPMP2"
+license = {text = "ArtiMinds Proprietary Software License"}
+version = "1.0"
+dependencies = [
+    'torch==2.2.2',
+    'numpy==1.26.4',
+    'open3d==0.18.0',
+    'scipy==1.13',
+    'urdf-parser-py',
+    'transformations',
+    'matplotlib',
+    'opencv-python',
+    'differentiable-robot-model @ git+https://github.com/benjaminalt/differentiable-robot-model.git@dgpmp2-nd'
+]
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+line_length = 120

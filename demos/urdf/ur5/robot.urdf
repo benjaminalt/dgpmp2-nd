@@ -1,0 +1,293 @@
+<?xml version="1.0" ?>
+<!-- This file is part of DGPMP2-ND    
+
+Copyright (C) 2024 ArtiMinds Robotics GmbH
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ -->
+<robot name="ur5" xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller" xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface" xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor" xmlns:xacro="http://ros.org/wiki/xacro">
+    <material name="UR/Blue">
+        <color rgba="0.0 0.0 0.8 1.0" />
+    </material>
+    <material name="UR/Grey">
+        <color rgba="0.7 0.7 0.7 1.0" />
+    </material>
+    <link name="base_link" />
+    <joint name="Manipulator_Base" type="fixed">
+        <parent link="base_link" />
+        <child link="base_var" />
+        <axis xyz="1 0 0" />
+        <origin rpy="0 -0 0" xyz="0 0 0" />
+    </joint>
+    <link name="base_var" />
+    <joint name="base_fixed_joint" type="fixed">
+        <origin rpy="0 0 3.14159265359" xyz="0.0 0.0 0.0" />
+        <parent link="base_var" />
+        <child link="base_link_fixed_orientation" />
+    </joint>
+    <link name="base_link_fixed_orientation">
+        <visual>
+            <geometry>
+                <mesh filename="./collision/base.stl" />
+            </geometry>
+            <origin rpy="0.0 0.0 2.35619449019" xyz="0.0 0.0 0.003" />
+        </visual>
+        <collision>
+            <geometry>
+                <mesh filename="./collision/base.stl" />
+            </geometry>
+            <origin rpy="0.0 0.0 2.35619449019" xyz="0.0 0.0 0.003" />
+        </collision>
+        <inertial>
+            <origin rpy="0.0 0.0 0" xyz="0.0 0.0 0" />
+            <mass value="4.0" />
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        </inertial>
+    </link>
+    <joint name="shoulder_pan_joint" type="revolute">
+        <parent link="base_link_fixed_orientation" />
+        <child link="shoulder_link" />
+        <origin rpy="0 0 3.14159265359" xyz="0.0 0.0 0.089159" />
+        <axis xyz="0 0 1" />
+        <limit effort="10.0" lower="-6.28318530718" upper="6.28318530718" velocity="3.14159265359" />
+        <dynamics damping="10" friction="0.1" />
+    </joint>
+    <link name="shoulder_link">
+        <visual>
+            <origin rpy="0 0 3.14159265359" xyz="0 0 0" />
+            <geometry>
+                <mesh filename="./collision/shoulder.stl" />
+            </geometry>
+        </visual>
+        <collision>
+            <geometry>
+                <mesh filename="./collision/shoulder.stl" />
+            </geometry>
+            <origin rpy="0 0 3.14159265359" xyz="0 0 0" />
+        </collision>
+        <inertial>
+            <mass value="3.7" />
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+            <origin rpy="0.0 0.0 0.0" xyz="0.0 0.00193 -0.02561" />
+        </inertial>
+    </link>
+    <link name="shoulder_link2" />
+    <joint name="shoulder_pan_joint2" type="fixed">
+        <parent link="shoulder_link" />
+        <child link="shoulder_link2" />
+        <origin rpy="1.57079632679 0 0" xyz="0.0 0 0" />
+    </joint>
+    <joint name="shoulder_lift_joint" type="revolute">
+        <parent link="shoulder_link2" />
+        <child link="upper_arm_link" />
+        <origin rpy="0 0 0.0" xyz="0.0 0.0 0.0" />
+        <axis xyz="0 0 1" />
+        <limit effort="10.0" lower="-6.28318530718" upper="6.28318530718" velocity="3.14159265359" />
+        <dynamics damping="10" friction="0.1" />
+    </joint>
+    <link name="upper_arm_link">
+        <visual>
+            <origin rpy="1.57079632679 0 -1.57079632679" xyz="0 0 0.13585" />
+            <geometry>
+                <mesh filename="./collision/upperarm.stl" />
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="1.57079632679 0 -1.57079632679" xyz="0 0 0.13585" />
+            <geometry>
+                <mesh filename="./collision/upperarm.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="8.393" />
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+            <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.024201 0.2125" />
+        </inertial>
+    </link>
+    <link name="upper_arm_link2" />
+    <joint name="shoulder_lift_joint2" type="fixed">
+        <parent link="upper_arm_link" />
+        <child link="upper_arm_link2" />
+        <origin rpy="0.0 0 0" xyz="-0.425 0 0" />
+    </joint>
+    <joint name="elbow_joint" type="revolute">
+        <parent link="upper_arm_link2" />
+        <child link="forearm_link" />
+        <origin rpy="0 0 0.0" xyz="0.0 0.0 0.0" />
+        <axis xyz="0 0 1" />
+        <limit effort="10.0" lower="-6.28318530718" upper="6.28318530718" velocity="3.14159265359" />
+        <dynamics damping="10" friction="0.1" />
+    </joint>
+    <link name="forearm_link">
+        <visual>
+            <origin rpy="1.57079632679 0 -1.57079632679" xyz="0 0 0.01615" />
+            <geometry>
+                <mesh filename="./collision/forearm.stl" />
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="1.57079632679 0 -1.57079632679" xyz="0 0 0.01615" />
+            <geometry>
+                <mesh filename="./collision/forearm.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="2.275" />
+            <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0265 0.11993" />
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        </inertial>
+    </link>
+    <link name="forearm_link2" />
+    <joint name="elbow_joint2" type="fixed">
+        <parent link="forearm_link" />
+        <child link="forearm_link2" />
+        <origin rpy="0.0 0 0" xyz="-0.39225 0 0" />
+    </joint>
+    <joint name="wrist_1_joint" type="revolute">
+        <parent link="forearm_link2" />
+        <child link="wrist_1_link" />
+        <origin rpy="0 0 0.0" xyz="0.0 0.0 0.10915" />
+        <axis xyz="0 0 1" />
+        <limit effort="10.0" lower="-6.28318530718" upper="6.28318530718" velocity="3.14159265359" />
+        <dynamics damping="10" friction="0.1" />
+    </joint>
+    <link name="wrist_1_link">
+        <visual>
+            <origin rpy="1.57079632679 0 1.57079632679" xyz="0 0 0" />
+            <geometry>
+                <mesh filename="./collision/wrist1.stl" />
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="1.57079632679 0 1.57079632679" xyz="0 0 0" />
+            <geometry>
+                <mesh filename="./collision/wrist1.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="1.219" />
+            <origin rpy="0.0 0.0 0.0" xyz="0.0 0.110949 0.01634" />
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        </inertial>
+    </link>
+    <link name="wrist_1_link2" />
+    <joint name="wrist_1_joint2" type="fixed">
+        <parent link="wrist_1_link" />
+        <child link="wrist_1_link2" />
+        <origin rpy="1.57079632679 0 0" xyz="0.0 0 0" />
+    </joint>
+    <joint name="wrist_2_joint" type="revolute">
+        <parent link="wrist_1_link2" />
+        <child link="wrist_2_link" />
+        <origin rpy="0 0 0.0" xyz="0.0 0.0 0.09465" />
+        <axis xyz="0 0 1" />
+        <limit effort="10.0" lower="-6.28318530718" upper="6.28318530718" velocity="3.14159265359" />
+        <dynamics damping="10" friction="0.1" />
+    </joint>
+    <link name="wrist_2_link">
+        <visual>
+            <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0" />
+            <geometry>
+                <mesh filename="./collision/wrist2.stl" />
+            </geometry>
+        </visual>
+        <collision>
+            <geometry>
+                <mesh filename="./collision/wrist2.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="1.219" />
+            <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0018 0.11099" />
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        </inertial>
+    </link>
+    <link name="wrist_2_link2" />
+    <joint name="wrist_2_joint2" type="fixed">
+        <parent link="wrist_2_link" />
+        <child link="wrist_2_link2" />
+        <origin rpy="-1.57079632679 0 0" xyz="0.0 0 0" />
+    </joint>
+    <joint name="wrist_3_joint" type="revolute">
+        <parent link="wrist_2_link2" />
+        <child link="wrist_3_link" />
+        <origin rpy="0 0 0.0" xyz="0.0 0.0 0.0823" />
+        <axis xyz="0 0 1" />
+        <limit effort="10.0" lower="-6.28318530718" upper="6.28318530718" velocity="3.14159265359" />
+        <dynamics damping="10" friction="0.1" />
+    </joint>
+    <link name="wrist_3_link">
+        <visual>
+            <origin rpy="1.57079632679 0 0" xyz="0 0 -0.0823" />
+            <geometry>
+                <mesh filename="./collision/wrist3.stl" />
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="1.57079632679 0 0" xyz="0 0 -0.0823" />
+            <geometry>
+                <mesh filename="./collision/wrist3.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0.1879" />
+            <origin rpy="0.0 0.0 0.0" xyz="0.0 0.001159 0.0" />
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        </inertial>
+    </link>
+    <joint name="ee_fixed_joint" type="fixed">
+        <parent link="wrist_3_link" />
+        <child link="ee_link" />
+        <!--origin xyz="0.0 ${d6 + delta_d_6} 0.0" rpy="0 0 ${pi/2.0}" /-->
+        <!--<origin rpy="3.14159265359 0.0 0" xyz="0.0 0 0" />-->
+        <origin rpy="0 0 0" xyz="0.0 0.0 0.0" />
+    </joint>
+    <link name="ee_link" />
+    <link name="default_point_offset" />
+    <joint name="default_point_fixed_joint" type="fixed">
+        <parent link="ee_link" />
+        <child link="default_point_offset" />
+        <origin rpy="3.14159265359 0 0" xyz="0.0 0.0 0.0" />
+    </joint>
+    <gazebo reference="universal_robot">
+        <material>Gazebo/Blue</material>
+    </gazebo>
+    <!-- calibration -->
+    <!-- defaults -->
+    <!-- robot includes -->
+    <!--xacro:include filename="$(find am-robot_configurator)/urdf/ur5.urdf.xacro" />
+  <xacro:include filename="$(find am-robot_configurator)/urdf/robotiq-2FG.urdf.xacro" />
+  <xacro:include filename="$(find am-robot_configurator)/urdf/robotiq-FT150.urdf.xacro" /-->
+    <!-- instantiate robots -->
+    <!--xacro:ur5_robot prefix="">
+  </xacro:ur5_robot>
+
+  <xacro:robotiq-2FG_robot prefix="" connector="ee_link">
+  </xacro:robotiq-2FG_robot>
+  
+  <xacro:robotiq-FT150_robot connector="ee_link">
+  </xacro:robotiq-FT150_robot-->
+    <!-- add joint and link for demonstrations, this should not be the last link to make moveit interactive marker to work 
+       NOTE: define link before joint!
+  -->
+    <link name="default_point" />
+    <!-- Do not change "Tool-Center-Point-Base". This string is used in am-robot_configurator -->
+    <joint name="Tool-Center-Point-Origin_Manipulator" type="fixed">
+        <parent link="default_point_offset" />
+        <child link="default_point" />
+        <axis xyz="1 0 0" />
+        <limit effort="100" lower="-1" upper="1" velocity="100" />
+        <origin rpy="0 -0 0" xyz="0 0 0" />
+    </joint>
+</robot>
